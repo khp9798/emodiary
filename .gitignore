@@ -1,0 +1,81 @@
+# =========================
+# Flutter / Dart
+# =========================
+**/build/
+**/.dart_tool/
+**/.packages
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.idea/
+**/.vscode/
+*.iml
+
+# iOS
+**/ios/Flutter/.symlinks/
+**/ios/Pods/
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Android
+**/android/.gradle/
+**/android/captures/
+**/android/app/release/
+**/android/local.properties
+**/android/key.properties
+**/android/.idea/
+
+# =========================
+# Java / Spring Boot
+# =========================
+**/target/
+**/.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+build/
+out/
+
+# Logs
+*.log
+hs_err_pid*
+replay_pid*
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# =========================
+# Python (FastAPI, scripts)
+# =========================
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+*.sqlite3
+.venv/
+env/
+venv/
+pip-wheel-metadata/
+*.egg-info/
+
+# =========================
+# Terraform
+# =========================
+*.tfstate
+*.tfstate.*
+.crash
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+
+# =========================
+# OS / Etc
+# =========================
+.DS_Store
+Thumbs.db
