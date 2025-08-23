@@ -79,3 +79,36 @@ pip-wheel-metadata/
 # =========================
 .DS_Store
 Thumbs.db
+
+
+# ===== Common secrets / env =====
+.env
+.env.*
+**/.env
+**/.secrets/
+
+# ===== Android signing / artifacts =====
+**/*.jks
+**/*.keystore
+**/*.keystore.properties
+**/android/app/*.keystore
+**/android/app/*.jks
+**/android/app/google-services.json
+**/android/app/google-services.plist
+**/*.aab
+**/*.apk
+
+# ===== Xcode / iOS & macOS =====
+**/*.xcuserstate
+**/*.xcworkspace/xcuserdata/
+**/ios/DerivedData/
+**/macos/DerivedData/
+
+# ===== Python (추가) =====
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+
+# ===== Java/Gradle (추가) =====
+**/*.class
+**/.settings/
