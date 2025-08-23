@@ -18,6 +18,9 @@
 **/ios/Flutter/Flutter.framework
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/DerivedData/
+**/*.xcuserstate
+**/*.xcworkspace/xcuserdata/
 
 # Android
 **/android/.gradle/
@@ -26,6 +29,13 @@
 **/android/local.properties
 **/android/key.properties
 **/android/.idea/
+**/*.jks
+**/*.keystore
+**/*.keystore.properties
+**/android/app/google-services.json
+**/android/app/google-services.plist
+**/*.apk
+**/*.aab
 
 # =========================
 # Java / Spring Boot
@@ -35,7 +45,6 @@
 **/build/
 !gradle/wrapper/gradle-wrapper.jar
 .gradle/
-build/
 out/
 
 # Logs
@@ -63,6 +72,9 @@ env/
 venv/
 pip-wheel-metadata/
 *.egg-info/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
 
 # =========================
 # Terraform
@@ -75,40 +87,15 @@ pip-wheel-metadata/
 .terraform.lock.hcl
 
 # =========================
-# OS / Etc
+# Env / Secrets
 # =========================
-.DS_Store
-Thumbs.db
-
-
-# ===== Common secrets / env =====
 .env
 .env.*
 **/.env
 **/.secrets/
 
-# ===== Android signing / artifacts =====
-**/*.jks
-**/*.keystore
-**/*.keystore.properties
-**/android/app/*.keystore
-**/android/app/*.jks
-**/android/app/google-services.json
-**/android/app/google-services.plist
-**/*.aab
-**/*.apk
-
-# ===== Xcode / iOS & macOS =====
-**/*.xcuserstate
-**/*.xcworkspace/xcuserdata/
-**/ios/DerivedData/
-**/macos/DerivedData/
-
-# ===== Python (추가) =====
-**/.pytest_cache/
-**/.mypy_cache/
-**/.ruff_cache/
-
-# ===== Java/Gradle (추가) =====
-**/*.class
-**/.settings/
+# =========================
+# OS / Etc
+# =========================
+.DS_Store
+Thumbs.db
