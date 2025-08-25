@@ -21,6 +21,13 @@
 **/ios/DerivedData/
 **/*.xcuserstate
 **/*.xcworkspace/xcuserdata/
+**/ios/Podfile.lock
+
+# macOS
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+**/macos/Podfile.lock
+
 
 # Android
 **/android/.gradle/
