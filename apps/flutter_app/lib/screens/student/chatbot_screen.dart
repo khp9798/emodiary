@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// AI 챗봇 화면
+///
+/// 학생들이 감정을 털어놓을 수 있는 공감형 AI 챗봇과 대화하는 화면
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
 
@@ -218,6 +221,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _scrollToBottom();
   }
 
+  /// AI 응답 생성 (현재는 간단한 키워드 매칭)
+  ///
+  /// [userMessage] - 사용자 메시지
+  /// 실제 구현 시에는 AI API를 사용하여 더 정교한 응답 생성
   String _generateAIResponse(String userMessage) {
     // 간단한 AI 응답 로직 (실제로는 AI API를 사용해야 함)
     if (userMessage.contains('행복') || userMessage.contains('기쁘')) {
@@ -246,10 +253,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 }
 
+/// 채팅 메시지 데이터 클래스
+///
+/// 채팅 화면에서 사용되는 메시지 정보를 담는 클래스
 class ChatMessage {
-  final String text;
-  final bool isUser;
-  final DateTime timestamp;
+  final String text; // 메시지 내용
+  final bool isUser; // 사용자 메시지 여부 (true: 사용자, false: AI)
+  final DateTime timestamp; // 메시지 전송 시간
 
   ChatMessage({
     required this.text,

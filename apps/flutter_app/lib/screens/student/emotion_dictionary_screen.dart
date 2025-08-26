@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// 학생용 감정 사전 화면
+///
+/// 학생들이 감정에 대한 정의를 확인하고 새로운 정의를 제안할 수 있는 화면
 class EmotionDictionaryScreen extends StatefulWidget {
   const EmotionDictionaryScreen({super.key});
 
@@ -13,6 +16,7 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
   final TextEditingController _definitionController = TextEditingController();
   String _selectedEmotion = '행복';
 
+  // 감정별 기본 정의 - 아동 눈높이에 맞춘 설명
   final Map<String, String> _emotionDefinitions = {
     '행복': '마음이 기쁘고 웃고 싶은 느낌이에요',
     '슬픔': '마음이 아프고 울고 싶은 느낌이에요',
@@ -67,7 +71,7 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '감정에 대해 우리 반 친구들과 함께 정의를 정해보세요.',
+                      '감정에 대해 우리 반 친구들과 함께 의미를 정해보세요.',
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -159,7 +163,7 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
 
             // 새로운 정의 입력
             Text(
-              '새로운 정의를 제안해보세요',
+              '새로운 의미를 제안해보세요',
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -170,7 +174,7 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
               controller: _definitionController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: '$_selectedEmotion에 대한 새로운 정의를 적어보세요...',
+                hintText: '$_selectedEmotion에 대한 새로운 의미를 적어보세요...',
                 border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
@@ -187,7 +191,7 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text(
-                '정의 제안하기',
+                '의미 제안하기',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -211,18 +215,21 @@ class _EmotionDictionaryScreenState extends State<EmotionDictionaryScreen> {
     );
   }
 
+  /// 새로운 감정 정의 제안
+  ///
+  /// 학생이 선택한 감정에 대한 새로운 정의를 제안하는 기능
   void _submitDefinition() {
     if (_definitionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('정의를 입력해주세요!')));
+      ).showSnackBar(const SnackBar(content: Text('감정의 의미를 입력해주세요!')));
       return;
     }
 
-    // TODO: 정의 제안 로직 구현
+    // TODO: 정의 제안 로직 구현 - 서버에 제안 내용 전송
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$_selectedEmotion에 대한 정의를 제안했습니다!'),
+        content: Text('$_selectedEmotion에 대한 의미를 제안했습니다!'),
         backgroundColor: Colors.green,
       ),
     );
