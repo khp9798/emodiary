@@ -520,7 +520,12 @@ class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
       // 3단계: 파일 크기 확인
       final size = await file.length(); // 파일 크기 (바이트 단위)
 
-      // 4단계: 업로드 시작 알림
+      // 4단계: 콘솔 로그에 파일 정보 출력
+      debugPrint('📁 업로드할 파일 정보:');
+      debugPrint('   경로: $_recordingPath');
+      debugPrint('   크기: $size bytes');
+
+      // 5단계: 업로드 시작 알림
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('⬆ 업로드 중... (모킹)'),
@@ -528,10 +533,10 @@ class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
         ),
       );
 
-      // 5단계: 모킹 업로드 시뮬레이션 (실제 업로드 대신 2초 대기)
+      // 6단계: 모킹 업로드 시뮬레이션 (실제 업로드 대신 2초 대기)
       await Future.delayed(const Duration(seconds: 2));
 
-      // 6단계: 업로드 완료 알림
+      // 7단계: 업로드 완료 알림
       if (!mounted) return; // 화면이 사라졌으면 알림 표시하지 않음
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
