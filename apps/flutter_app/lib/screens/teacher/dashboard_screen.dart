@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// 교사용 대시보드 화면
+///
+/// 교사가 학급 전체의 감정 현황과 통계를 한눈에 파악할 수 있는 메인 화면
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
@@ -17,7 +20,7 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 오늘 날짜 및 요약
+            // 오늘 날짜 및 요약 - 현재 날짜와 학급 현황 개요
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -56,7 +59,7 @@ class DashboardScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 통계 카드들
+            // 통계 카드들 - 주요 지표들을 시각적으로 표시
             Row(
               children: [
                 Expanded(
@@ -109,7 +112,7 @@ class DashboardScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 감정 분포 차트 (간단한 버전)
+            // 감정 분포 차트 (간단한 버전) - 학급 전체의 감정 분포를 시각화
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -137,7 +140,7 @@ class DashboardScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 메뉴 버튼들
+            // 메뉴 버튼들 - 교사 기능들에 대한 네비게이션
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,

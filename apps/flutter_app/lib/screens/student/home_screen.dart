@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// 학생용 홈 화면
+///
+/// 학생들이 일기 작성, 감정 사전, AI 챗봇 등의 기능에 접근할 수 있는 메인 화면
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -19,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 32),
 
-            // 환영 메시지
+            // 환영 메시지 카드 - 학생들에게 친근한 인사말과 앱 사용 안내
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -50,7 +53,7 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // 메뉴 버튼들
+            // 메뉴 버튼들 - 주요 기능들에 대한 그리드 레이아웃
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -99,6 +102,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  /// 메뉴 카드 위젯 생성
+  ///
+  /// [context] - 빌드 컨텍스트
+  /// [title] - 카드 제목
+  /// [icon] - 카드 아이콘
+  /// [color] - 카드 색상
+  /// [onTap] - 탭 시 실행할 콜백 함수
   Widget _buildMenuCard(
     BuildContext context,
     String title,
