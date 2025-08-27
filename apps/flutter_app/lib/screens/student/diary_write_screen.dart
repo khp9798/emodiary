@@ -16,6 +16,12 @@ import 'package:flutter_sound/flutter_sound.dart';
 // 앱의 문서 폴더 경로를 가져오기 위한 라이브러리
 import 'package:path_provider/path_provider.dart';
 
+// HTTP 클라이언트 라이브러리 (서버와 통신)
+import 'package:dio/dio.dart';
+
+// 파일 경로 조작을 위한 라이브러리
+import 'package:path/path.dart' as p;
+
 /// 일기 작성 화면 위젯
 ///
 /// StatefulWidget은 상태가 변할 수 있는 위젯입니다.
@@ -291,7 +297,7 @@ class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
                                           ? null
                                           : _uploadRecording, // busy 상태면 비활성화
                                       icon: const Icon(Icons.upload), // 업로드 아이콘
-                                      label: const Text('⬆ 업로드(모킹)'), // 모킹 표시
+                                      label: const Text('⬆ 업로드'), // 실제 업로드
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.orange, // 주황색
                                         foregroundColor: Colors.white,
@@ -490,9 +496,11 @@ class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
     }
   }
 
-  /// 녹음 파일을 업로드하는 메서드 (현재는 모킹)
+  /// 녹음 파일을 업로드하는 메서드 (Presigned URL 연동)
   ///
-  /// 실제 구현 시에는 서버로 파일을 업로드하고 STT(음성-텍스트 변환)를 수행합니다.
+  /// 1. 서버에서 Presigned URL을 요청
+  /// 2. 받은 URL로 파일을 직접 업로드
+  /// 3. 업로드 성공/실패에 따른 처리
   Future<void> _uploadRecording() async {
     // 1단계: 녹음 파일 존재 확인
     if (_recordingPath == null) {
@@ -528,33 +536,115 @@ class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
       // 5단계: 업로드 시작 알림
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('⬆ 업로드 중... (모킹)'),
+          content: Text('⬆ 업로드 중...'),
           backgroundColor: Colors.orange, // 주황색 배경
         ),
       );
 
-      // 6단계: 모킹 업로드 시뮬레이션 (실제 업로드 대신 2초 대기)
-      await Future.delayed(const Duration(seconds: 2));
+      // 6단계: Dio 인스턴스 생성 (HTTP 클라이언트)
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 10), // 연결 타임아웃
+          receiveTimeout: const Duration(seconds: 30), // 응답 타임아웃
+        ),
+      );
 
-      // 7단계: 업로드 완료 알림
+      // 7단계: 플랫폼별 base URL 설정
+      // Android 에뮬레이터는 10.0.2.2, iOS 시뮬레이터는 localhost, 웹은 localhost
+      final platform = Theme.of(context).platform;
+      final baseUrl = switch (platform) {
+        TargetPlatform.android => 'http://10.0.2.2:8080',
+        TargetPlatform.iOS => 'http://localhost:8080',
+        _ => 'http://localhost:8080', // 웹, macOS, Windows, Linux 등
+      };
+
+      // 8단계: Presigned URL 요청
+      debugPrint('🔗 Presigned URL 요청 중...');
+      debugPrint('📡 요청 URL: $baseUrl/files/presign');
+      debugPrint(
+        '📤 요청 데이터: {fileName: ${p.basename(_recordingPath!)}, mimeType: audio/m4a}',
+      );
+
+      final presignResponse = await dio.post(
+        '$baseUrl/files/presign',
+        data: {
+          'fileName': p.basename(_recordingPath!), // 파일명만 추출 (서버 DTO 필드명)
+          'mimeType': 'audio/m4a', // MIME 타입 (서버 DTO 필드명)
+        },
+      );
+
+      // 9단계: 응답 파싱 (안전화)
+      debugPrint('📥 응답 상태 코드: ${presignResponse.statusCode}');
+      debugPrint('📥 응답 데이터: ${presignResponse.data}');
+
+      if (presignResponse.statusCode != 200 || presignResponse.data == null) {
+        throw Exception('Presigned URL 요청 실패: ${presignResponse.statusCode}');
+      }
+
+      // 안전한 응답 파싱 (런타임 에러 방지)
+      final presignData = Map<String, dynamic>.from(
+        presignResponse.data as Map,
+      );
+      final uploadUrl = presignData['uploadUrl'] as String?;
+      final fileKey = (presignData['fileKey'] ?? presignData['key']) as String?;
+
+      if (uploadUrl == null) {
+        throw Exception('Presigned URL 응답에 uploadUrl이 없습니다.');
+      }
+
+      debugPrint('✅ Presigned URL 받음: $uploadUrl');
+      debugPrint('📁 파일 키: $fileKey');
+
+      // 10단계: 파일 업로드 (PUT 요청) - 스트리밍 + 안전화
+      debugPrint('⬆ 파일 업로드 중...');
+      debugPrint('📡 업로드 URL: $uploadUrl');
+
+      final fileSize = await file.length(); // 파일 크기 미리 계산
+      final uploadResponse = await dio.put(
+        uploadUrl,
+        data: file.openRead(), // 스트리밍 업로드 (메모리 효율적)
+        options: Options(
+          headers: {
+            'Content-Type': 'audio/m4a', // MIME 타입 헤더
+            'Content-Length': fileSize.toString(), // 정확한 파일 크기 지정
+          },
+          responseType: ResponseType.plain, // 보통 JSON 응답 안 옴
+        ),
+      );
+
+      // 11단계: 업로드 성공 확인 (성공 코드 범위 확장)
+      debugPrint('📥 업로드 응답 상태 코드: ${uploadResponse.statusCode}');
+      debugPrint('📥 업로드 응답 데이터: ${uploadResponse.data}');
+
+      final code = uploadResponse.statusCode ?? 0;
+      if (code != 200 && code != 204 && code != 201) {
+        throw Exception('파일 업로드 실패: $code');
+      }
+
+      // 12단계: 업로드 완료 알림
       if (!mounted) return; // 화면이 사라졌으면 알림 표시하지 않음
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('✅ 업로드 완료! (모킹)  크기: $size bytes'),
+          content: Text('✅ 업로드 완료! 크기: $size bytes'),
           backgroundColor: Colors.green, // 초록색 배경
         ),
       );
 
-      // TODO: 실제 구현 시 추가할 내용들
-      // TODO: 실제 Presigned URL PUT 업로드로 교체
+      debugPrint('🎉 파일 업로드 성공!');
+
       // TODO: 업로드 후 STT 파이프라인 트리거
       // TODO: STT 결과를 텍스트 필드에 자동 입력
     } catch (e) {
       // 오류 발생 시 처리
+      debugPrint('❌ 업로드 실패: $e');
+
       if (!mounted) return; // 화면이 사라졌으면 오류 메시지 표시하지 않음
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('업로드 실패: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ 업로드 실패: $e'),
+          backgroundColor: Colors.red, // 빨간색 배경
+        ),
+      );
     } finally {
       _busy = false; // 작업 완료 표시 (성공/실패 관계없이)
     }
